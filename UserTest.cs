@@ -1,5 +1,7 @@
 ﻿using Interprit_Exam.DTO.UserList;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Interprit_Exam
 {
@@ -12,6 +14,7 @@ namespace Interprit_Exam
         //Verify GET User response if single user found
         public void TC1()
         {
+            var test = getResponseData("2").Result.data.GetValue(0);
             Assert.AreEqual(getResponse("Get",URI + "api/users/2"), "OK");
         }
 
@@ -28,7 +31,7 @@ namespace Interprit_Exam
         {
             CreateUser payLoad = new CreateUser(){ Name= "morpheus", Job = "leader"};
 
-            Assert.AreEqual(getResponse("post",URI + "api/users", payLoad), "Created");
+            Assert.AreEqual("Created",getResponse("post",URI + "api/users", payLoad));
         }
 
         [TestMethod]
@@ -55,5 +58,13 @@ namespace Interprit_Exam
         {
             Assert.AreEqual(getResponse("Delete", URI + "api/users/2"), "NoContent");
         }
+
+        [TestMethod]
+        //Verify delayed response
+        public void TC7()
+        {
+            Assert.AreEqual(getResponse("Get", URI + "api/users?delay=3"), "OK");
+        }
+        
     }
 }

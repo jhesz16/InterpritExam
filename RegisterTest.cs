@@ -15,14 +15,6 @@ namespace Interprit_Exam
     [TestClass]
     public class RegisterTest : Base
     {
-        /*
-
-        
-        
-        Verify POST Login request
-        Verify POST unsuccessful Login request
-        Verify Get delayed response*/
-
         [TestMethod]
         //Verify POST register request
         public async Task TC1()
@@ -51,41 +43,51 @@ namespace Interprit_Exam
             Assert.IsNotNull(JsonConvert.DeserializeObject(res));            
         }
 
-
         [TestMethod]
         //Verify POST unsuccessful register request
         public async Task TC2()
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri("https://reqres.in/api/register");
             Register postData = new Register { email = "eve.holt@reqres.in", password = null };
+            RegisterError expResponse = new RegisterError { error = "Missing password"};
+
             using (HttpResponseMessage response = await client.PostAsJsonAsync("https://reqres.in/api/register", postData))
             {
                 var responseContent = response.Content.ReadAsStringAsync().Result;
 
                 Assert.AreEqual("BadRequest", response.StatusCode.ToString());
-                Assert.AreEqual("{\"error\":\"Missing password\"}", responseContent.ToString());
+                Assert.AreEqual(JsonConvert.SerializeObject(expResponse), responseContent.ToString());
             }
         }
+
         [TestMethod]
-        //Verify POST unsuccessful register request
+        [Description("Verify POST Login request")]
         public async Task TC3()
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri("https://reqres.in/api/login");
-            var postData = new {Email= "eve.holt@reqres.in",Password= "cityslicka"};
+            Register postData = new Register { email = "eve.holt@reqres.in", password = "cityslicka"};
+            RegisterError expResponse = new RegisterError { error = "Missing email or username" };
 
-            var content = new StringContent(JsonConvert.SerializeObject(postData), Encoding.UTF8, "application/json");
-
-
-            //string test = getResponse("Post", "https://reqres.in/api/login", content);
-
-            using (HttpResponseMessage response = await client.PostAsync("posts", content))
+            using (HttpResponseMessage response = await client.PostAsJsonAsync("https://reqres.in/api/login", postData))
             {
                 var responseContent = response.Content.ReadAsStringAsync().Result;
 
-                Assert.AreEqual("BadRequest", response.StatusCode.ToString());
-                Assert.AreEqual("{\"error\":\"Missing email or username\"}", responseContent.ToString());
+                Assert.AreEqual(response.StatusCode.ToString(), "OK");
+            }
+        }
+        [TestMethod]
+        [Description("Verify POST unsuccessful Login request")]
+        public async Task TC4()
+        {
+            var client = new HttpClient();
+            Register postData = new Register { email = "peter@klaven", password = null };
+            RegisterError expResponse = new RegisterError { error = "Missing email or username" };
+
+            using (HttpResponseMessage response = await client.PostAsJsonAsync("https://reqres.in/api/login", postData))
+            {
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+
+                Assert.AreEqual(response.StatusCode.ToString(), "BadRequest");
             }
         }
     }

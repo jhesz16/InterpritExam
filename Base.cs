@@ -24,7 +24,8 @@ namespace Interprit_Exam
             switch (action.ToUpper())
             {
                 case "POST":
-                    response = restClient.PutAsJsonAsync(url, payLoad).Result.StatusCode.ToString();
+                    var pl = new StringContent(JsonConvert.SerializeObject(payLoad), Encoding.UTF8, "application/json");
+                    response = restClient.PostAsync(url, pl).Result.StatusCode.ToString();
                     break;
                 case "PUT":
                     response = restClient.PutAsJsonAsync(url, payLoad).Result.StatusCode.ToString();
@@ -66,10 +67,10 @@ namespace Interprit_Exam
             return JsonConvert.DeserializeObject<Resources>(response);
         }
 
-        public static async Task<UserList> getResponseRoot(string page)
+        public static async Task<UserList.root> getResponseData(string page)
         {
             var response = await restClient.GetStringAsync(URI + "users?page=" + page);
-            return JsonConvert.DeserializeObject<UserList>(response);
+            return JsonConvert.DeserializeObject<UserList.root>(response);
         }
 
         public WebRequest getPostReqObj(string url)

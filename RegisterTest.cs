@@ -5,6 +5,10 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
+using RestSharp;
+using System.Net;
+using System.IO;
 
 namespace Interprit_Exam
 {
@@ -23,33 +27,44 @@ namespace Interprit_Exam
         //Verify POST register request
         public async Task TC1()
         {
-            var client = new HttpClient();
-            client.BaseAddress = new Uri("https://reqres.in/api/register");
-            Register postData = new Register { Email = "eve.holt@reqres.in", Password = "pistol" };
-            var content = new StringContent(JsonConvert.SerializeObject(postData), Encoding.UTF8, "application/json");
+            string res;
+            Register postData = new Register { email= "eve.holt@reqres.in",password= "pistol"};
+            string postDataSerialized = JsonConvert.SerializeObject(postData);
 
-            using (HttpResponseMessage response = await client.PostAsync("posts", content))
+            WebRequest requestObjPost = getPostReqObj("https://reqres.in/api/register");
+
+            using (var streamWriter = new StreamWriter(requestObjPost.GetRequestStream()))
             {
-                var responseContent = response.Content.ReadAsStringAsync().Result;
-                Assert.AreEqual("Created", response.StatusCode.ToString());
+                streamWriter.Write(postDataSerialized);
+                streamWriter.Flush();
+                streamWriter.Close();
+
+                var httpResponse = (HttpWebResponse)requestObjPost.GetResponse();
+                Assert.AreEqual("OK", httpResponse.StatusCode.ToString());
+
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    res = streamReader.ReadToEnd();
+                }
             }
+
+            Assert.IsNotNull(JsonConvert.DeserializeObject(res));            
         }
-                
+
+
         [TestMethod]
         //Verify POST unsuccessful register request
         public async Task TC2()
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri("https://reqres.in/api/register");
-            Register postData = new Register  { Email = "sydney@fife"};
-            var content = new StringContent(JsonConvert.SerializeObject(postData), Encoding.UTF8, "application/json");
-
-            using (HttpResponseMessage response = await client.PostAsync(client.BaseAddress, content))
+            Register postData = new Register { email = "eve.holt@reqres.in", password = null };
+            using (HttpResponseMessage response = await client.PostAsJsonAsync("https://reqres.in/api/register", postData))
             {
                 var responseContent = response.Content.ReadAsStringAsync().Result;
 
                 Assert.AreEqual("BadRequest", response.StatusCode.ToString());
-                Assert.AreEqual("{\"error\":\"Missing email or username\"}", responseContent.ToString());
+                Assert.AreEqual("{\"error\":\"Missing password\"}", responseContent.ToString());
             }
         }
         [TestMethod]

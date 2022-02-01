@@ -5,6 +5,8 @@ using Interprit_Exam.DTO.UserList;
 using Interprit_Exam.DTO.Users;
 using Newtonsoft.Json;
 using RestSharp;
+using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,8 +24,7 @@ namespace Interprit_Exam
             switch (action.ToUpper())
             {
                 case "POST":
-                    var pload = new StringContent(JsonConvert.SerializeObject(payLoad),Encoding.UTF8,"application/json");
-                    response = restClient.PostAsync(url, pload).Result.StatusCode.ToString();
+                    response = restClient.PutAsJsonAsync(url, payLoad).Result.StatusCode.ToString();
                     break;
                 case "PUT":
                     response = restClient.PutAsJsonAsync(url, payLoad).Result.StatusCode.ToString();
@@ -71,6 +72,13 @@ namespace Interprit_Exam
             return JsonConvert.DeserializeObject<UserList>(response);
         }
 
-        
+        public WebRequest getPostReqObj(string url)
+        {
+            WebRequest requestObjPost = WebRequest.Create(String.Format(url));
+            requestObjPost.Method = "POST";
+            requestObjPost.ContentType = "application/json";
+            return requestObjPost;
+        }
+
     }
 }

@@ -1,14 +1,10 @@
 ﻿using Interprit_Exam.DTO.Register;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using RestSharp;
-using System.Net;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Interprit_Exam
 {
@@ -39,8 +35,10 @@ namespace Interprit_Exam
                     res = streamReader.ReadToEnd();
                 }
             }
-
-            Assert.IsNotNull(JsonConvert.DeserializeObject(res));            
+            RegisterResponse successregisterResponse = JsonConvert.DeserializeObject<RegisterResponse> (res);
+            
+            Assert.IsNotNull(successregisterResponse.Token);
+            Assert.IsNotNull(successregisterResponse.Id);
         }
 
         [TestMethod]

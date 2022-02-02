@@ -1,10 +1,8 @@
 ﻿using HttpClientExtensions.Patch;
-using Interprit_Exam.DTO.Register;
 using Interprit_Exam.DTO.Resources;
 using Interprit_Exam.DTO.UserList;
 using Interprit_Exam.DTO.Users;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Net;
 using System.Net.Http;

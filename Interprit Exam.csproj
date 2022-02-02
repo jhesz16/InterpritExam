@@ -267,6 +267,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\Login\Login.cs" />
     <Compile Include="DTO\Register\Register.cs" />
     <Compile Include="DTO\Register\RegisterResponse.cs" />
     <Compile Include="DTO\Register\RegisterError.cs" />
@@ -276,9 +277,10 @@
     <Compile Include="DTO\Users\Users.cs" />
     <Compile Include="Base.cs" />
     <Compile Include="DTO\UserList\UserList.cs" />
-    <Compile Include="RegisterTest.cs" />
-    <Compile Include="ResourceTest.cs" />
-    <Compile Include="UserTest.cs" />
+    <Compile Include="Tests\LogInTest.cs" />
+    <Compile Include="Tests\RegisterTest.cs" />
+    <Compile Include="Tests\ResourceTest.cs" />
+    <Compile Include="Tests\UserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 using Interprit_Exam.DTO.Resources;
 using Interprit_Exam.DTO.UserList;
 using Interprit_Exam.DTO.Users;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -79,5 +80,15 @@ namespace Interprit_Exam
             return requestObjPost;
         }
 
+        public async Task<string> validatePostResponseCodeAndGetResponseBody(string url, object postData, string expectedStatusCode)
+        {
+            var client = new HttpClient();
+            using (HttpResponseMessage response = await client.PostAsJsonAsync(url, postData))
+            {
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                Assert.AreEqual(response.StatusCode.ToString(), expectedStatusCode);
+                return responseContent;
+            }
+        }
     }
 }
